@@ -5,13 +5,15 @@
   <title>Follow Along Nav</title>
 </head>
 <body>
-  <h2>Cool</h2>
+  <!-- <h2>Cool</h2> -->
   <nav class="top">
+    <!-- the dropdownBackground is the white background of the dropdowns. arrow points to the part of the dropdown being accessed. -->
     <div class="dropdownBackground">
       <span class="arrow"></span>
     </div>
 
     <ul class="cool">
+        <!-- the top-levels li's are our triggers. It's triggered on the list because to do it on, 'about me' for example would mean you couldn't hover off it without it turning itself off thus rendering the links on the dropdown useless. -->
       <li>
         <a href="#">About Me</a>
         <div class="dropdown dropdown1">
@@ -220,6 +222,53 @@
 </style>
 
 <script>
+    // the cool thing about this feature is that the nav dropdowns are not visible until you hover over them- the background transforms itself from w & h as well as position on page. 
+    // there's a puppy div that follows the mouse around and transforms the display. 
+const triggers = document.querySelectorAll('.cool > li');
+// the parameters above select all the direct decendants of .cool that are li's.
+const background = document.querySelector('.dropdownBackground');
+const nav = document.querySelector('.top');
+
+// below we add a timer to the mouseleave event so that the dropdowns don't disappear immediately when you move your mouse away from the nav bar.
+function handleEnter() {
+this.classList.add('trigger-enter');
+setTimeout(() => {
+    if (this.classList.contains('trigger-enter')) {
+        this.classList.add('trigger-enter-active');
+    }
+    this.classList.add('trigger-enter-active')
+}, 150);
+background.classList.add('open');    
+// dropdown and dropdownCoords give us the width and height of the dropdown menu. Bottom, left, top, bottom- location on the page. 
+const dropdown = this.querySelector('.dropdown');
+const dropdownCoords = dropdown.getBoundingClientRect();
+const navCoords = nav.getBoundingClientRect();
+
+// regardless of what happens on the page, the dropdown will always be in the same place- we're getting the coords programmatically.
+const coords = {
+    height: dropdownCoords.height,
+    width: dropdownCoords.width,
+    top: dropdownCoords.top - navCoords.top,
+    left: dropdownCoords.left - navCoords.left
+};
+
+background.style.setProperty('width', `${coords.width}px`);
+background.style.setProperty('height', `${coords.height}px`);
+background.style.setProperty('transform', `translate(${coords.left}px, ${coords.top}px)`);
+
+}
+
+function handleLeave() {
+this.classList.remove('trigger-enter', 'trigger-enter-active');
+background.classList.remove('open');  
+}
+
+
+
+// we use forEach here because we want to add an event listener to each of the triggers.
+triggers.forEach(trigger => trigger.addEventListener('mouseenter', handleEnter));
+triggers.forEach(trigger => trigger.addEventListener('mouseleave', handleLeave));
+
 </script>
 
 </body>
